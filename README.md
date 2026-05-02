@@ -43,7 +43,7 @@ module load cmake
 | Requirement | Notes |
 |---|---|
 | CMake ≥ 3.14 | |
-| GCC | Required; Clang/ICC not supported for submission |
+| GCC | Required; Clang/ICC not supported |
 | BLAS library | e.g., Cray LibSci (loaded automatically on Perlmutter), OpenBLAS, or MKL |
 | AVX2 + FMA support | The blocked kernel targets `znver3` (AMD Zen 3, Perlmutter's CPU) |
 
@@ -81,7 +81,6 @@ job-blas
 |---|---|---|
 | `ALL_SIZES` | `OFF` | Test an extended set of matrix sizes (31–1025). Significantly increases runtime. Enable with `-DALL_SIZES=ON` |
 | `MAX_SPEED` | `56` | Peak CPU throughput in GFlop/s. The default reflects Perlmutter's CPU: 3.5 GHz × 4 (AVX2 doubles) × 2 (pipelines) × 2 (FMA) = 56 GFlop/s |
-| `GROUP_NO` | `00` | Two-digit group number for packaging a submission tarball via CPack |
 
 Example with options:
 
@@ -93,7 +92,7 @@ cmake .. -DALL_SIZES=ON -DMAX_SPEED=56
 
 ## Running
 
-### Interactively (for quick testing)
+### Interactively
 
 ```bash
 cd build
@@ -173,20 +172,7 @@ The benchmarking harness in `benchmark.cpp` automatically checks correctness aft
 |C_blocked - C_blas| ≤ 3 * ε_machine * n * |A| * |B|
 ```
 
-If any element exceeds this bound, the program prints `*** FAILURE ***` and exits with a non-zero status. All three implementations must pass this check.
-
----
-
-## Packaging for Submission
-
-Set your group number at configure time to enable CPack:
-
-```bash
-cmake .. -DGROUP_NO=07
-make package
-```
-
-This produces `CS5220Group07_hw1.tar.gz` containing `dgemm-blocked.c` and your report PDF (place `CS5220Group07_hw1.pdf` in the build directory before running `make package`).
+If any element exceeds this bound, the program prints `*** FAILURE ***` and exits with a non-zero status.
 
 ---
 
